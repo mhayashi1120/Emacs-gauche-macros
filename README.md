@@ -1,7 +1,8 @@
 # Emacs-gauche-macros
 
-Import gauche macros to elisp with some conventions
+Import gauche macros to elisp with changing some conventions.
 
+Never conflict with GNU Emacs subr.el routines
 
 TODO check GNU Emacs subr.el to avoid conflict of naming.
 

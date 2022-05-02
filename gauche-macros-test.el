@@ -34,20 +34,20 @@
     '(nil))))
 
 
-(ert-deftest and-let1 ()
+(ert-deftest srfi-and-let1 ()
   :tags '(gauche-macros)
   ;; (VARIABLE EXPRESSION)
-  (should (equal (and-let* ((a nil)) a) nil))
-  (should (equal (and-let* ((a t)) a) t))
-  (should (equal (and-let* ((a 1) (b 2)) (list a b)) '(1 2)))
+  (should (equal (srfi-and-let* ((a nil)) a) nil))
+  (should (equal (srfi-and-let* ((a t)) a) t))
+  (should (equal (srfi-and-let* ((a 1) (b 2)) (list a b)) '(1 2)))
   ;; (EXPRESSION)
-  (should (equal (and-let* ((1)) 3) 3))
-  (should (equal (and-let* ((nil)) 3) nil))
-  (should (equal (and-let* (((identity t))) 3) 3))
-  (should (equal (and-let* (((identity nil))) 3) nil))
+  (should (equal (srfi-and-let* ((1)) 3) 3))
+  (should (equal (srfi-and-let* ((nil)) 3) nil))
+  (should (equal (srfi-and-let* (((identity t))) 3) 3))
+  (should (equal (srfi-and-let* (((identity nil))) 3) nil))
   ;; BOUND-VARIABLE
-  (should (equal (let ((a 1)) (and-let* (a) 3)) 3))
-  (should (equal (let ((a nil)) (and-let* (a) 3)) nil))
+  (should (equal (let ((a 1)) (srfi-and-let* (a) 3)) 3))
+  (should (equal (let ((a nil)) (srfi-and-let* (a) 3)) nil))
   )
 
 

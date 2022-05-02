@@ -1,10 +1,25 @@
 ;;; gauche-macros.el --- -*- lexical-binding: t -*-
 
 ;; Author: Masahiro Hayashi <mhayashi1120@gmail.com>
-;; Keywords:
+;; Keywords: macro scheme
 ;; Emacs: GNU Emacs
 ;; Package-Requires: ((cl-lib "1.0"))
+;; Version: 0.8.0
 
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or (at
+;; your option) any later version.
+
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
 ;;
@@ -42,6 +57,33 @@ like emacs-lisp style `if'."
   `(let ((,var ,expr))
      (if ,var ,then ,@else)))
 
+;; (let ((sample '((a . "A"))))
+;;
+;;   (list
+;;    ;; Same as Emacs-Lisp cond.
+;;    (srfi-cond
+;;     ((assoc 'a sample)
+;;      (list (cdr (assoc 'a sample)))))
+;;
+;;    ;; Above is rewrite as following.
+;;    (srfi-cond
+;;     ((assoc 'a sample) =>
+;;      (lambda (v) (list (cdr v)))))
+;;
+;;    (srfi-cond
+;;     ((assoc 'b sample) =>
+;;      (lambda (v) (error "Should not found"))))
+;;
+;;    ;; Guard examples. Guard clause can continue TESTs
+;;    (srfi-cond
+;;     ((assoc 'a sample)
+;;      (lambda (v) (string= (cdr v) "B")) =>
+;;      (lambda (v) (list (cdr v))))
+;;     ((assoc 'a sample)
+;;      (lambda (v) (string= (cdr v) "A")) =>
+;;      (lambda (v) (list (cdr v)))))
+;;    ))
+
 (defmacro srfi-cond (&rest clauses)
   "Like `cond' but some SRFI like extension.
 
@@ -53,14 +95,24 @@ CLAUSE ::= (TEST GUARD => LAMBDA)
 
 CLAUSE: Try each clause until TEST (optionally GUARD) return non-nil value
   and last form is evaluated.
-LAMBDA: Call with one arg non-nil result of previous TEST
-GUARD: Call with one arg non-nil result of previous TEST.
-  If the GUARD return nil, following LAMBDA is not called.
+LAMBDA: Function call with one argument. non-nil result of previous TEST
+GUARD: Function call with one argument. non-nil result of previous TEST.
+  If the GUARD return nil, following LAMBDA is not called and continue next CLAUSEs.
 
-TODO example
+Emacs-Lisp `cond':
+\(let (tmp)
+  (cond
+   ((setq tmp (string-to-number x))
+     tmp)))
+
+Above rewrite to:
+\(srfi-cond
+  ((string-to-number x) =>
+   (lambda (v) v)))
+
 
 NOTE: Cannot handle multiple-values.
-NOTE: Unlike scheme, not using `else' keyword.
+NOTE: Unlike scheme, not using `else' keyword using `t' same as Emacs-Lisp cond.
 
 \[SRFI-61]
 http://srfi.schemers.org/srfi-61/srfi-61.html"
@@ -98,6 +150,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
 
 
 
+;; Renamed and-let* -> srfi-and-let* since similar `and-let*' is introduced subr.el GNU Emacs
 (defmacro srfi-and-let* (varlist &rest body)
   "Like `let' but only CLAW bind non-nil value.
 Useful to avoid deep nesting of `let' and `and'/`when'/`if' test.
@@ -153,6 +206,33 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
 
 
 
+;; Useful when constructing json.
+;; (let ((input (make-hash-table)))
+;;   (puthash 'a "A" input)
+;;   (puthash 'b "B" input)
+;;   (puthash 'c 10 input)
+;;   (puthash 'd [1,2,3] input)
+;;   (puthash 'j `((z . "Z") (y . "Y"))  input)
+;;   (json-encode
+;;    (cond-list
+;;     (t
+;;      (cons "Required" "Field"))
+;;     ((gethash 'a input) =>
+;;      (lambda (v) (cons "optionalField" v)))
+;;     ((gethash 'not-found input) =>
+;;      (lambda (v) (cons "NotFound" v)))
+;;     ((gethash 'c input) =>
+;;      (lambda (v) (cons "optionalVector" (make-vector 5 v))))
+;;     ((gethash 'd input) =>
+;;      (lambda (v) (cons "optionalValue" (aref v 0))))
+;;     ((gethash 'j input) =>
+;;      (lambda (v) (cons "InnerJson" v)))
+;;     ;; This will expanded to parent json
+;;     ((gethash 'j input) => @
+;;      (lambda (v) v))
+;;     )
+;;    ))
+
 ;; From gauche common-macros.scm
 (defmacro cond-list (&rest clauses)
   "Expand CLAUSES last form if TEST success.
@@ -164,15 +244,21 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
 
 e.g.
 
-\(cond-list (t 1) (nil 2) (t '(3)))
+\(cond-list
+  (t 1)
+  (nil 2)
+  (t '(3)))
   => (1 (3))
 
-\(cond-list (t 1) (t @ '(2 3 4)))
+\(cond-list
+  (t 1)
+  (t @ '(2 3 4)))
   => (1 2 3 4)
 
-\(cond-list ('a => (lambda (x) (list x)))
-           ('b => @ (lambda (x) (list x)))
-           ('c => @ (lambda (x) nil)))
+\(cond-list
+  ('a => (lambda (x) (list x)))
+  ('b => @ (lambda (x) (list x)))
+  ('c => @ (lambda (x) nil)))
   => ((a) b)
 
 "
@@ -356,14 +442,15 @@ NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
 (defun gauche-macros--activate-font-lock-keywords ()
   (gauche-macros--append-font-lock-functional-keywords
    "let1" "rlet1" "if-let1"
-   "srfi-and-let*"
+   "srfi-and-let*" "and-let1"
    "srfi-cond" "cond-list"
-   "cut"
+   "cut" "cute"
    "$"
    )
   (gauche-macros--append-font-lock-named-binding-keywords)
   (gauche-macros--append-font-lock-syntactic-keywords
    "=>" "@" "$" "$*"
+   "<>" "<...>"
    )
   )
 
