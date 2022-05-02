@@ -3,7 +3,7 @@
 ;; Author: Masahiro Hayashi <mhayashi1120@gmail.com>
 ;; Keywords:
 ;; Emacs: GNU Emacs
-;; Package-Requires: ((cl-lib "0.3"))
+;; Package-Requires: ((cl-lib "1.0"))
 
 
 ;;; Commentary:
@@ -104,7 +104,7 @@ Useful to avoid deep nesting of `let' and `and'/`when'/`if' test.
 
 AND-LET* (CLAWS) BODY
 
-CLAWS ::= '() | (cons CLAW CLAWS)
+CLAWS ::= '() | (CLAW . CLAWS)
 CLAW  ::=  (VARIABLE EXPRESSION) | (EXPRESSION) | BOUND-VARIABLE
 
 \(let ((v1 (some)))
@@ -221,7 +221,7 @@ e.g.
 (defmacro $ (&rest args)
   "Convenience macro to chain functions.
 
-NOTE: Unlike scheme function, symbol must be quoted. This behavior same as `mapcar', `mapc'.
+NOTE: Unlike scheme, function symbol must be quoted. This behavior same as `mapcar', `mapc'.
 
 ($ 'f a $ 'g d) => (f a (g d))
 ($ 'f a $ 'g d $) => (lambda (x) (f a (g d x)))
@@ -275,7 +275,7 @@ See `cut', `cute'
 (defmacro cut (&rest exprs)
   "Convenience macro to generate function handle partial application.
 
-NOTE: Unlike scheme function, symbol must be quoted. This behavior same as `mapcar', `mapc'.
+NOTE: Unlike scheme, function symbol must be quoted. This behavior same as `mapcar', `mapc'.
 
 (cut 'a <>) => (lambda (arg) (a arg))
 (cut '+ <> 2) => (lambda (arg) (+ arg 2))
