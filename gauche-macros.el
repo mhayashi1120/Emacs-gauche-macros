@@ -98,7 +98,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
 
 
 
-(defmacro and-let* (varlist &rest body)
+(defmacro srfi-and-let* (varlist &rest body)
   "Like `let' but only CLAW bind non-nil value.
 Useful to avoid deep nesting of `let' and `and'/`when'/`if' test.
 
@@ -115,7 +115,7 @@ CLAW  ::=  (VARIABLE EXPRESSION) | (EXPRESSION) | BOUND-VARIABLE
 
 above can rewrite as following:
 
-\(and-let* ((v1 (some))
+\(srfi-and-let* ((v1 (some))
            (v2 (any)))
    (message \"Working!\"))
 
@@ -133,9 +133,9 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
        ;; (EXPRESSION)
        `(and ,@v ,res))
       ((> (length v) 2)
-       (error "Malformed `and-let*' %s" v))
+       (error "Malformed `srfi-and-let*' %s" v))
       ((not (symbolp (car v)))
-       (error "Malformed `and-let*' %s" v))
+       (error "Malformed `srfi-and-let*' %s" v))
       (t
        ;; (VARIABLE EXPRESSION)
        `(let ((,(car v) ,(cadr v)))
@@ -148,7 +148,7 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
   "Syntax sugar:
 (and-let1 var test body ...) == (and-let* ((var test)) body ...)"
   (declare (indent 2))
-  `(and-let* ((,var ,test))
+  `(srfi-and-let* ((,var ,test))
      ,@body))
 
 
@@ -356,7 +356,7 @@ NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
 (defun gauche-macros--activate-font-lock-keywords ()
   (gauche-macros--append-font-lock-functional-keywords
    "let1" "rlet1" "if-let1"
-   "and-let*"
+   "srfi-and-let*"
    "srfi-cond" "cond-list"
    "cut"
    "$"

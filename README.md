@@ -3,8 +3,10 @@
 Import gauche macros to elisp with some conventions
 
 
+TODO check GNU Emacs subr.el to avoid conflict of naming.
+
 - cond-list
-- and-let*
+- srfi-and-let* (Originally `and-let*`)
 - srfi-cond (Original `cond`)
 - $
 - cut, cute
