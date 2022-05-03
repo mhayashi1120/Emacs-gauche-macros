@@ -1,4 +1,4 @@
-
+;; -*- lexical-binding: t -*-
 
 (require 'gauche-macros)
 (require 'ert)

@@ -304,10 +304,14 @@ e.g.
 
 
 
+;; ($  (cut 'mapconcat 'identity <> ":")
+;;     $ 'mapcar (cut 'format "-%d-" <>)
+;;     $ 'mapcar '1+ 
+;;     $ 'mapcar 'string-to-number
+;;     $ (cut 'split-string <> ",") "11,22,33")
+
 (defmacro $ (&rest args)
   "Convenience macro to chain functions.
-
-NOTE: Unlike scheme, function symbol must be quoted. This behavior same as `mapcar', `mapc'.
 
 ($ 'f a $ 'g d) => (f a (g d))
 ($ 'f a $ 'g d $) => (lambda (x) (f a (g d x)))
@@ -369,7 +373,7 @@ NOTE: Unlike scheme, function symbol must be quoted. This behavior same as `mapc
 (cut '+ 10 <...>) => (lambda (&rest args) (apply '+ 10 args))
 
 NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
- To simplify this help, omit in this help description. 
+ To simplify this help, omit the call in this help description. 
 "
   (let ((forms `())
         (args `())
