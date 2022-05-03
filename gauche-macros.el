@@ -220,13 +220,13 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
 ;;     ((gethash 'a input) =>
 ;;      (lambda (v) (cons "optionalField" v)))
 ;;     ((gethash 'not-found input) =>
-;;      (lambda (v) (cons "NotFound" v)))
+;;      (lambda (v) (error "Should not found %s" v)))
 ;;     ((gethash 'c input) =>
 ;;      (lambda (v) (cons "optionalVector" (make-vector 5 v))))
 ;;     ((gethash 'd input) =>
 ;;      (lambda (v) (cons "optionalValue" (aref v 0))))
 ;;     ((gethash 'j input) =>
-;;      (lambda (v) (cons "InnerJson" v)))
+;;      (lambda (v) (cons "optionalChildJson" v)))
 ;;     ;; This will expanded to parent json
 ;;     ((gethash 'j input) => @
 ;;      (lambda (v) v))
