@@ -371,7 +371,8 @@ NOTE: Unlike scheme, function symbol must be quoted. This behavior same as `mapc
 (cut '+ <> 2) => (lambda (arg) (+ arg 2))
 (cut <> 1 2) => (lambda (arg) (funcall arg 1 2))
 (cut '+ 10 <...>) => (lambda (&rest args) (apply '+ 10 args))
-
+(cut '+ 1 <> 3 <>) => (lambda (arg1 arg2) (+ 1 arg1 3 arg2))
+ 
 NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
  To simplify this help, omit the call in this help description. 
 "
