@@ -5,7 +5,7 @@
 
 (ert-deftest cond-list1 ()
   :tags '(gauche-macros)
-  (should (equal (cond-list 
+  (should (equal (cond-list
                   ;; normal
                   (1 1)
                   ;; body is function
@@ -27,7 +27,7 @@
   :tags '(gauche-macros)
   (should
    (equal
-    (cond-list 
+    (cond-list
      ;; empty body
      (nil)
      (t))
