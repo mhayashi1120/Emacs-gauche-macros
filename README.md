@@ -4,7 +4,8 @@ Import [Gauche](https://practical-scheme.net/gauche/) macros to elisp with chang
 
 - Desired to never conflict with GNU Emacs subr.el routines
 - Short name symbol is using now, so maybe conflict to other package function.
-TODO check in test GNU Emacs subr.el to avoid conflict of naming.
+
+## Macro
 
 - cond-list
 - srfi-and-let* (Originally `and-let*`)
@@ -14,4 +15,8 @@ TODO check in test GNU Emacs subr.el to avoid conflict of naming.
 - and-let1
 - let1
 - rlet1
-- if-let1
+- if-let1 (TODO)
+
+# TODO
+
+- check in test GNU Emacs subr.el to avoid conflict of naming.
