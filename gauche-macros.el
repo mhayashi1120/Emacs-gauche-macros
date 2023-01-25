@@ -140,7 +140,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
                 ,res))))
         (t
          `(if ,test
-              ;; (test) 
+              ;; (test)
               ;; (test body1 body2 ...)
               (progn ,@(cdr clause))
             ,res)))))
@@ -306,7 +306,7 @@ e.g.
 
 ;; ($  (cut 'mapconcat 'identity <> ":")
 ;;     $ 'mapcar (cut 'format "-%d-" <>)
-;;     $ 'mapcar '1+ 
+;;     $ 'mapcar '1+
 ;;     $ 'mapcar 'string-to-number
 ;;     $ (cut 'split-string <> ",") "11,22,33")
 
@@ -372,9 +372,9 @@ NOTE: Unlike scheme, function symbol must be quoted. This behavior same as `mapc
 (cut <> 1 2) => (lambda (arg) (funcall arg 1 2))
 (cut '+ 10 <...>) => (lambda (&rest args) (apply '+ 10 args))
 (cut '+ 1 <> 3 <>) => (lambda (arg1 arg2) (+ 1 arg1 3 arg2))
- 
+
 NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
- To simplify this help, omit the call in this help description. 
+ To simplify this help, omit the call in this help description.
 "
   (let ((forms `())
         (args `())
