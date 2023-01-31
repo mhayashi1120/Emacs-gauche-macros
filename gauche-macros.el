@@ -97,7 +97,8 @@ CLAUSE: Try each clause until TEST (optionally GUARD) return non-nil value
   and last form is evaluated.
 LAMBDA: Function call with one argument. non-nil result of previous TEST
 GUARD: Function call with one argument. non-nil result of previous TEST.
-  If the GUARD return nil, following LAMBDA is not called and continue next CLAUSEs.
+  If the GUARD return nil, following LAMBDA is not called and continue
+  next CLAUSEs.
 
 Emacs-Lisp `cond':
 \(let (tmp)
@@ -365,7 +366,8 @@ See `cut', `cute'
 (defmacro cut (&rest exprs)
   "Convenience macro to generate function handle partial application.
 
-NOTE: Unlike scheme, function symbol must be quoted. This behavior same as `mapcar', `mapc'.
+NOTE: Unlike scheme, function symbol must be quoted. This behavior
+   same as `mapcar', `mapc'.
 
 (cut 'a <>) => (lambda (arg) (a arg))
 (cut '+ <> 2) => (lambda (arg) (+ arg 2))
