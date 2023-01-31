@@ -75,6 +75,11 @@
                  "_AB:CD_"))
   (should (equal (apply ($ 'format "_%s_" $ 'concat $*) '("AB:" "CD"))
                  "_AB:CD_"))
+  (should (equal ($ 'format "_%s_" $ 'concat $* 'identity '("AB:" "CD"))
+                 "_AB:CD_"))
+
+  (should (equal ($ 'format "_%s_" $* 'list $ 'concat "AB:" "CD")
+                 "_AB:CD_"))
 
   (should (equal ($ 'format "-%s-" $ 'number-to-string $ '* 2 5)
                  "-10-"))
@@ -137,7 +142,7 @@
 
 
 (defun gauche-macros-test--generator (n)
-  (lexical-let ((m n))
+  (let ((m n))
     (lambda (arg) (member m arg))))
 
 (ert-deftest srfi-cond1 ()
