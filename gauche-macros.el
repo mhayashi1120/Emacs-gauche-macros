@@ -4,7 +4,7 @@
 ;; Keywords: macro scheme
 ;; Emacs: GNU Emacs
 ;; Package-Requires: ((cl-lib "1.0"))
-;; Version: 0.8.0
+;; Version: 0.8.1
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -305,18 +305,18 @@ e.g.
 
 
 
-;; ($  (cut 'mapconcat 'identity <> ":")
-;;     $ 'mapcar (cut 'format "-%d-" <>)
-;;     $ 'mapcar '1+
-;;     $ 'mapcar 'string-to-number
-;;     $ (cut 'split-string <> ",") "11,22,33")
+;; ($  (cut 'mapconcat #'identity <> ":")
+;;     $ #'mapcar (cut #'format "-%d-" <>)
+;;     $ #'mapcar #'1+
+;;     $ #'mapcar #'string-to-number
+;;     $ (cut #'split-string <> ",") "11,22,33")
 
 (defmacro $ (&rest args)
   "Convenience macro to chain functions.
 
-($ 'f a $ 'g d) => (f a (g d))
-($ 'f a $ 'g d $) => (lambda (x) (f a (g d x)))
-($ 'f a $ 'g d $*) => (lambda (&rest xs) (f a (apply 'g d xs)))
+($ #'f a $ #'g d) => (f a (g d))
+($ #'f a $ #'g d $) => (lambda (x) (f a (g d x)))
+($ #'f a $ #'g d $*) => (lambda (&rest xs) (f a (apply #'g d xs)))
 
 See `cut', `cute'
 "
@@ -369,11 +369,11 @@ See `cut', `cute'
 NOTE: Unlike scheme, function symbol must be quoted. This behavior
    same as `mapcar', `mapc'.
 
-(cut 'a <>) => (lambda (arg) (a arg))
-(cut '+ <> 2) => (lambda (arg) (+ arg 2))
+(cut #'a <>) => (lambda (arg) (a arg))
+(cut #'+ <> 2) => (lambda (arg) (+ arg 2))
 (cut <> 1 2) => (lambda (arg) (funcall arg 1 2))
-(cut '+ 10 <...>) => (lambda (&rest args) (apply '+ 10 args))
-(cut '+ 1 <> 3 <>) => (lambda (arg1 arg2) (+ 1 arg1 3 arg2))
+(cut #'+ 10 <...>) => (lambda (&rest args) (apply #'+ 10 args))
+(cut #'+ 1 <> 3 <>) => (lambda (arg1 arg2) (+ 1 arg1 3 arg2))
 
 NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
  To simplify this help, omit the call in this help description.
@@ -400,9 +400,9 @@ NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
      (reverse exprs))
     (cond
      ((not tail*)
-      (setq forms (cons 'funcall forms)))
+      (setq forms (cons #'funcall forms)))
      (t
-      (setq forms (cons 'apply forms))))
+      (setq forms (cons #'apply forms))))
     `(lambda (,@args) ,forms)))
 
 (defmacro cute (&rest exprs)
@@ -436,9 +436,9 @@ NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
      (reverse exprs))
     (cond
      (tail*
-      (setq forms (cons 'apply forms)))
+      (setq forms (cons #'apply forms)))
      (t
-      (setq forms (cons 'funcall forms))))
+      (setq forms (cons #'funcall forms))))
     `(let (,@vars)
        (lambda (,@args) ,forms))))
 
