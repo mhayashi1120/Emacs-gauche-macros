@@ -1,9 +1,10 @@
-;;; gauche-macros.el --- -*- lexical-binding: t -*-
+;;; gauche-macros.el --- Gauche :heartbeat: macros -*- lexical-binding: t -*-
 
 ;; Author: Masahiro Hayashi <mhayashi1120@gmail.com>
-;; Keywords: macro scheme
+;; Keywords: lisp tools
 ;; Emacs: GNU Emacs
-;; Package-Requires: ((cl-lib "1.0"))
+;; URL: https://github.com/mhayashi1120/Emacs-gauche-macros
+;; Package-Requires: ((emacs "24.3"))
 ;; Version: 0.8.1
 
 ;; This program is free software; you can redistribute it and/or
@@ -24,9 +25,9 @@
 ;;; Commentary:
 ;;
 
-(require 'cl-lib)
-
 ;;; Code:
+
+(require 'cl-lib)
 
 (defmacro let1 (var expr &rest body)
   "Bind VAR to EXPR and evaluate BODY.
@@ -452,14 +453,11 @@ NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
    "srfi-and-let*" "and-let1"
    "srfi-cond" "cond-list"
    "cut" "cute"
-   "$"
-   )
+   "$")
   (gauche-macros--append-font-lock-named-binding-keywords)
   (gauche-macros--append-font-lock-syntactic-keywords
    "=>" "@" "$" "$*"
-   "<>" "<...>"
-   )
-  )
+   "<>" "<...>"))
 
 (defun gauche-macros--append-font-lock-functional-keywords (&rest names)
   (font-lock-add-keywords
