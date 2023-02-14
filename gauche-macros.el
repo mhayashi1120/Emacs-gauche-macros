@@ -377,8 +377,8 @@ NOTE: Unlike scheme, function symbol must be quoted. This behavior
 (cut #'+ 10 <...>) => (lambda (&rest args) (apply #'+ 10 args))
 (cut #'+ 1 <> 3 <>) => (lambda (arg1 arg2) (+ 1 arg1 3 arg2))
 
-NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
- To simplify this help, omit the call in this help description.
+NOTE: To simplify this help, internally clearly using `funcall' or `apply'
+  to expand the EXPRS.
 "
   (let ((forms `())
         (args `())
@@ -408,7 +408,8 @@ NOTE: Internally certainly using `funcall' and `apply' to call elisp function.
     `(lambda (,@args) ,forms)))
 
 (defmacro cute (&rest exprs)
-  "Same as `cut' except non `<>' `<...>' EXPR evaluated before construct function.
+  "Same as `cut' except non `<>' `<...>' EXPR is evaluated before
+ construct the function.
 
 (cute '+ (+ 20 30) <>) => (let ((a 50)) (lambda (a1) (+ a a1)))
 
