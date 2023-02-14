@@ -52,8 +52,8 @@ Same as
   "Bind VAR to EXPR in THEN/ELSE form.
 THEN is only evaluated if EXPR is non-nil.
 
-Not like gauche if-let1 ELSE accept multiple forms
-like emacs-lisp style `if'."
+Not like gauche `if-let1' ELSE form accept multiple forms
+like Emacs-Lisp style `if'."
   (declare (indent 2))
   `(let ((,var ,expr))
      (if ,var ,then ,@else)))
@@ -86,7 +86,7 @@ like emacs-lisp style `if'."
 ;;    ))
 
 (defmacro srfi-cond (&rest clauses)
-  "Like `cond' but some SRFI like extension.
+  "Like `cond' but SRFI extension.
 
 CLAUSES ::= CLAUSE . CLAUSES
 CLAUSE ::= (TEST)
@@ -112,8 +112,7 @@ Above rewrite to:
   ((string-to-number x) =>
    (lambda (v) v)))
 
-
-NOTE: Cannot handle multiple-values.
+NOTE: Cannot handle multiple-values since Emacs-Lisp doesn't have.
 NOTE: Unlike scheme, not using `else' keyword using `t' same as Emacs-Lisp cond.
 
 \[SRFI-61]
