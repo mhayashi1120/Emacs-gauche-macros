@@ -95,11 +95,11 @@ CLAUSE ::= (TEST => LAMBDA)
 CLAUSE ::= (TEST GUARD => LAMBDA)
 
 CLAUSE: Try each clause until TEST (optionally GUARD) return non-nil value
-  and last form is evaluated.
-LAMBDA: Function call with one argument. non-nil result of previous TEST
-GUARD: Function call with one argument. non-nil result of previous TEST.
-  If the GUARD return nil, following LAMBDA is not called and continue
-  next CLAUSEs.
+  and succeeding BODY/LAMBDA is evaluated.
+LAMBDA: Function call with TEST result as an argument.
+GUARD: Function call with TEST result as an argument.
+  If the GUARD return nil, succeeding LAMBDA is not called and continue
+  to the next CLAUSEs.
 
 Emacs-Lisp `cond':
 \(let (tmp)
@@ -152,7 +152,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
 
 
 
-;; Renamed and-let* -> srfi-and-let* since similar `and-let*' is introduced subr.el GNU Emacs
+;; Renamed and-let* -> srfi-and-let* since similar `and-let*' is introduced subr-x.el GNU Emacs
 (defmacro srfi-and-let* (varlist &rest body)
   "Like `let' but only CLAW bind non-nil value.
 Useful to avoid deep nesting of `let' and `and'/`when'/`if' test.
@@ -170,9 +170,10 @@ CLAW  ::=  (VARIABLE EXPRESSION) | (EXPRESSION) | BOUND-VARIABLE
 
 above can rewrite as following:
 
-\(srfi-and-let* ((v1 (some))
-           (v2 (any)))
-   (message \"Working!\"))
+\(srfi-and-let*
+   ((v1 (some))
+    (v2 (any)))
+  (message \"Working!\"))
 
 \[SRFI-2]
 http://srfi.schemers.org/srfi-2/srfi-2.html
@@ -237,7 +238,7 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
 
 ;; From gauche common-macros.scm
 (defmacro cond-list (&rest clauses)
-  "Expand CLAUSES last form if TEST success.
+  "Expand CLAUSES succeeding form if TEST success.
 `@' notation append EXPR or PROC results to result set.
 \(TEST EXPR ...)
 \(TEST => PROC)
