@@ -34,7 +34,7 @@
 
 Same as
 \(let ((VAR EXPR)) BODY)"
-  (declare (indent 2))
+  (declare (indent 2) (debug t))
   `(let ((,var ,expr))
      ,@body))
 
@@ -43,7 +43,7 @@ Same as
 
 Same as
 \(let ((VAR EXPR)) BODY VAR)"
-  (declare (indent 2))
+  (declare (indent 2) (debug t))
   `(let ((,var ,expr))
      ,@body
      ,var))
@@ -54,7 +54,7 @@ THEN is only evaluated if EXPR is non-nil.
 
 Not like gauche `if-let1' ELSE form accept multiple forms
 like Emacs-Lisp style `if'."
-  (declare (indent 2))
+  (declare (indent 2) (debug t))
   `(let ((,var ,expr))
      (if ,var ,then ,@else)))
 
@@ -117,6 +117,7 @@ NOTE: Unlike scheme, not using `else' keyword using `t' same as Emacs-Lisp cond.
 
 \[SRFI-61]
 http://srfi.schemers.org/srfi-61/srfi-61.html"
+  (declare (debug t))
   (cl-reduce
    (lambda (clause res)
      (let ((test (car clause)))
@@ -177,7 +178,7 @@ above can rewrite as following:
 \[SRFI-2]
 http://srfi.schemers.org/srfi-2/srfi-2.html
 "
-  (declare (indent 1))
+  (declare (indent 1) (debug t))
   (cl-reduce
    (lambda (v res)
      (cond
@@ -264,6 +265,7 @@ e.g.
   => ((a) b)
 
 "
+  (declare (debug t))
   (cl-reduce
    (lambda (clause accum)
      (when (null clause)
@@ -321,6 +323,7 @@ e.g.
 
 See `cut', `cute'
 "
+  (declare (debug t))
   (let ((accum '())
         (delay-funcall nil)
         (delay-apply nil)
@@ -379,6 +382,7 @@ NOTE: Unlike scheme, function symbol must be quoted. This behavior
 NOTE: To simplify this help, internally clearly using `funcall' or `apply'
   to expand the EXPRS.
 "
+  (declare (debug t))
   (let ((forms `())
         (args `())
         (tail* nil))
@@ -413,6 +417,7 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
 (cute '+ (+ 20 30) <>) => (let ((a 50)) (lambda (a1) (+ a a1)))
 
 "
+  (declare (debug t))
   (let ((forms '())
         (args '())
         (vars '())
