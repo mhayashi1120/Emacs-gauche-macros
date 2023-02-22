@@ -23,7 +23,7 @@ Import [Gauche](https://practical-scheme.net/gauche/) macros to elisp with chang
 make check
 ```
 
-or
+### Specific version Emacs
 
 Something like:
 
@@ -31,14 +31,15 @@ Something like:
 make EMACS=/usr/local/emacs-28/bin/emacs check
 ```
 
-You can change by: TODO
+### Specific settings
+
+You can change environment by:
 
 ```
 cp env.mk.sample env.mk
-
 ```
 
-
+and edit env.mk
 
 
 # TODO
