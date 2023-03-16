@@ -308,6 +308,7 @@ e.g.
 
 
 
+;; TODO when eval the following with edebug-defun not working
 ;; ($  (cut 'mapconcat #'identity <> ":")
 ;;     $ #'mapcar (cut #'format "-%d-" <>)
 ;;     $ #'mapcar #'1+
@@ -342,7 +343,7 @@ See `cut', `cute'
              (setq delay-apply t))
             (t
              (error "Assert")))
-           (setq arg-sym (gensym))
+           (setq arg-sym (make-symbol "arg"))
            (setq accum (list arg-sym)))
           (t
            (setq accum
@@ -390,13 +391,13 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
      (lambda (e)
        (cond
         ((eq e '<>)
-         (let ((sym (gensym "arg")))
+         (let ((sym (make-symbol "arg")))
            (setq forms (cons sym forms))
            (setq args (cons sym args))))
         ((eq e '<...>)
          (when forms
            (error "Malformed cut. `<...>' should be last of the form."))
-         (let ((sym (gensym "args")))
+         (let ((sym (make-symbol "args")))
            (setq forms (list sym))
            (setq args (list '&rest sym))
            (setq tail* t)))
@@ -426,18 +427,18 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
      (lambda (e)
        (cond
         ((eq e '<>)
-         (let ((sym (gensym "arg")))
+         (let ((sym (make-symbol "arg")))
            (setq forms (cons sym forms))
            (setq args (cons sym args))))
         ((eq e '<...>)
          (when forms
            (error "Malformed cute. `<...>' should be last of the form."))
-         (let ((sym (gensym "args")))
+         (let ((sym (make-symbol "args")))
            (setq forms (list sym))
            (setq args (list '&rest sym))
            (setq tail* t)))
         (t
-         (let ((sym (gensym "const")))
+         (let ((sym (make-symbol "const")))
            (setq vars (cons (list sym e) vars))
            (setq forms (cons sym forms))))))
      (reverse exprs))
