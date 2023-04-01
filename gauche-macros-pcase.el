@@ -24,9 +24,11 @@
 
 ;;; Commentary:
 ;;
-;; `pcase` extensions originally come from gauche `util.match` module.
+;; `pcase' extensions originally come from gauche `util.match' module.
+;; This module use `pcase-exhaustive' since imitate util.match behavior.
 ;;
 ;; ## Usage:
+;;
 ;; ```
 ;; (mapcar
 ;;  (pcase-switch
@@ -55,6 +57,11 @@
 ;;  '(1000 160 100) '(m km mile)
 ;;    )
 ;; ```
+;; ## TODO:
+;;
+;;  Otherwise introduce gauche-macros-match.el
+;;
+
 ;;; Code:
 
 (require 'cl-lib)

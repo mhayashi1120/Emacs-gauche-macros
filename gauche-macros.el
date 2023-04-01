@@ -88,9 +88,8 @@ like Emacs-Lisp style `if'."
 (defmacro srfi-cond (&rest clauses)
   "Like `cond' but SRFI extension.
 
-CLAUSES ::= CLAUSE . CLAUSES
-CLAUSE ::= (TEST)
-CLAUSE ::= (TEST BODY)
+CLAUSES ::= CLAUSE . CLAUSES | ()
+CLAUSE ::= (TEST . BODY)
 CLAUSE ::= (TEST => LAMBDA)
 CLAUSE ::= (TEST GUARD => LAMBDA)
 
@@ -142,8 +141,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
                 ,res))))
         (t
          `(if ,test
-              ;; (test)
-              ;; (test body1 body2 ...)
+              ;; (test . body)
               (progn ,@(cdr clause))
             ,res)))))
    clauses
@@ -159,7 +157,7 @@ Useful to avoid deep nesting of `let' and `and'/`when'/`if' test.
 
 AND-LET* (CLAWS) BODY
 
-CLAWS ::= '() | (CLAW . CLAWS)
+CLAWS ::= \\='() | (CLAW . CLAWS)
 CLAW  ::=  (VARIABLE EXPRESSION) | (EXPRESSION) | BOUND-VARIABLE
 
 \(let ((v1 (some)))
@@ -250,18 +248,18 @@ e.g.
 \(cond-list
   (t 1)
   (nil 2)
-  (t '(3)))
+  (t \\='(3)))
   => (1 (3))
 
 \(cond-list
   (t 1)
-  (t @ '(2 3 4)))
+  (t @ \\='(2 3 4)))
   => (1 2 3 4)
 
 \(cond-list
-  ('a => (lambda (x) (list x)))
-  ('b => @ (lambda (x) (list x)))
-  ('c => @ (lambda (x) nil)))
+  (\\='a => (lambda (x) (list x)))
+  (\\='b => @ (lambda (x) (list x)))
+  (\\='c => @ (lambda (x) nil)))
   => ((a) b)
 
 "
@@ -318,9 +316,9 @@ e.g.
 (defmacro $ (&rest args)
   "Convenience macro to chain functions.
 
-($ #'f a $ #'g d) => (f a (g d))
-($ #'f a $ #'g d $) => (lambda (x) (f a (g d x)))
-($ #'f a $ #'g d $*) => (lambda (&rest xs) (f a (apply #'g d xs)))
+\($ #\\='f a $ #\\='g d) => (f a (g d))
+\($ #\\='f a $ #\\='g d $) => (lambda (x) (f a (g d x)))
+\($ #\\='f a $ #\\='g d $*) => (lambda (&rest xs) (f a (apply #\\='g d xs)))
 
 See `cut', `cute'
 "
@@ -374,11 +372,11 @@ See `cut', `cute'
 NOTE: Unlike scheme, function symbol must be quoted. This behavior
    same as `mapcar', `mapc'.
 
-(cut #'a <>) => (lambda (arg) (a arg))
-(cut #'+ <> 2) => (lambda (arg) (+ arg 2))
-(cut <> 1 2) => (lambda (arg) (funcall arg 1 2))
-(cut #'+ 10 <...>) => (lambda (&rest args) (apply #'+ 10 args))
-(cut #'+ 1 <> 3 <>) => (lambda (arg1 arg2) (+ 1 arg1 3 arg2))
+\(cut #\\='a <>) => (lambda (arg) (a arg))
+\(cut #\\='+ <> 2) => (lambda (arg) (+ arg 2))
+\(cut <> 1 2) => (lambda (arg) (funcall arg 1 2))
+\(cut #\\='+ 10 <...>) => (lambda (&rest args) (apply #\\='+ 10 args))
+\(cut #\\='+ 1 <> 3 <>) => (lambda (arg1 arg2) (+ 1 arg1 3 arg2))
 
 NOTE: To simplify this help, internally clearly using `funcall' or `apply'
   to expand the EXPRS.
@@ -415,7 +413,7 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
   "Same as `cut' except non `<>' `<...>' EXPR is evaluated before
  construct the function.
 
-(cute '+ (+ 20 30) <>) => (let ((a 50)) (lambda (a1) (+ a a1)))
+\(cute \\='+ (+ 20 30) <>) => (let ((a 50)) (lambda (a1) (+ a a1)))
 
 "
   (declare (debug t))
