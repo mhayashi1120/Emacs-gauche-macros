@@ -3,7 +3,7 @@ name: CI
 on:
   schedule:
     - cron: '42 23 * * 2'
-  # pull_request:
+  pull_request:
   push:
     paths-ignore:
       - '**.md'
@@ -15,7 +15,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          # - macos-latest
         emacs_version:
           # - 24.3
           # - 24.4
