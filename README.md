@@ -3,7 +3,7 @@
 Import [Gauche](https://practical-scheme.net/gauche/) macros to elisp with changing some conventions. Just import :heartbeat: macros.
 
 - Desired to never conflict with GNU Emacs core routines.
-- Short name symbol is using now, so maybe conflict to other package function.
+- Short name symbol is using now, so maybe conflict to other package function. (Never upload to elpa)
 
 ## Macro
 
