@@ -24,6 +24,13 @@
 
 ;;; Commentary:
 ;;
+;; Import [Gauche](https://practical-scheme.net/gauche/) macros to elisp with changing
+;;   some conventions. Just import :heartbeat: macros.
+;;
+;; This package is:
+;; - Desired to never conflict with GNU Emacs core routines.
+;; - Short name symbol is using now, so maybe conflict to other package function.
+;; - This package will **NEVER** be uploaded to elpa since avoid namespace confliction.
 
 ;;; Code:
 
