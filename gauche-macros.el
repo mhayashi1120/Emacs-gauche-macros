@@ -4,7 +4,7 @@
 ;; Keywords: lisp tools
 ;; Emacs: GNU Emacs
 ;; URL: https://github.com/mhayashi1120/Emacs-gauche-macros
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;; Version: 0.8.2
 
 ;; This program is free software; you can redistribute it and/or
