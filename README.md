@@ -1,5 +1,7 @@
 # Emacs-gauche-macros
 
+[![CI](https://github.com/mhayashi1120/Emacs-gauche-macros/actions/workflows/test.yml/badge.svg)](https://github.com/mhayashi1120/Emacs-gauche-macros/actions/workflows/test.yml)
+
 Import [Gauche](https://practical-scheme.net/gauche/) macros to elisp with changing
   some conventions. Just import :heartbeat: macros.
 
