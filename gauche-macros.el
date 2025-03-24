@@ -1,11 +1,11 @@
-;;; gauche-macros.el --- Gauche :heartbeat: macros -*- lexical-binding: t -*-
+;;; gauche-macros.el --- Gauche :heartbeat: macros -*- lexical-binding: t; -*-
 
 ;; Author: Masahiro Hayashi <mhayashi1120@gmail.com>
 ;; Keywords: lisp tools
 ;; Emacs: GNU Emacs
 ;; URL: https://github.com/mhayashi1120/Emacs-gauche-macros
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 0.8.2
+;; Version: 0.8.3
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as

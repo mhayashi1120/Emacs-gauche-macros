@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t; -*-
 
 ;; To check duplicated name with core routine (and `subr-x`)
 
