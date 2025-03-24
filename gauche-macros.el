@@ -41,7 +41,7 @@
 
 Same as
 \(let ((VAR EXPR)) BODY)"
-  (declare (indent 2) (debug t))
+  (declare (indent 2) (debug (sexp form body)))
   `(let ((,var ,expr))
      ,@body))
 
@@ -50,7 +50,7 @@ Same as
 
 Same as
 \(let ((VAR EXPR)) BODY VAR)"
-  (declare (indent 2) (debug t))
+  (declare (indent 2) (debug (sexp form body)))
   `(let ((,var ,expr))
      ,@body
      ,var))
@@ -61,7 +61,7 @@ THEN is only evaluated if EXPR is non-nil.
 
 Not like gauche `if-let1' ELSE form accept multiple forms
 like Emacs-Lisp style `if'."
-  (declare (indent 2) (debug t))
+  (declare (indent 2) (debug (sexp form form body)))
   `(let ((,var ,expr))
      (if ,var ,then ,@else)))
 
@@ -183,7 +183,7 @@ above can rewrite as following:
 \[SRFI-2]
 http://srfi.schemers.org/srfi-2/srfi-2.html
 "
-  (declare (indent 1) (debug t))
+  (declare (indent 1) (debug let))
   (cl-reduce
    (lambda (v res)
      (cond
@@ -208,7 +208,7 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
 (defmacro and-let1 (var test &rest body)
   "Syntax sugar:
 (and-let1 var test body ...) == (and-let* ((var test)) body ...)"
-  (declare (indent 2))
+  (declare (indent 2) (debug (sexp form body)))
   `(srfi-and-let* ((,var ,test))
      ,@body))
 
