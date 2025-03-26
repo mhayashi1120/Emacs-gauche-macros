@@ -132,7 +132,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
    (lambda (clause res)
      (pcase clause
        (`(,test . ,rest)
-        (pcase-exhaustive rest
+        (pcase rest
           (`(=> ,func1)
            (let ((V (gensym))
                  (FUNC1 (gensym)))
@@ -282,13 +282,13 @@ e.g.
   (declare (debug t))
   (cl-reduce
    (lambda (clause accum)
-     (pcase-exhaustive clause
+     (pcase clause
        (`(,test . ,body)
         (let ((V (gensym)))
           `(let ((,V ,test))
              (append
               (if ,V
-                  ,(pcase-exhaustive body
+                  ,(pcase body
                      ;; (TEST => @ PROC)
                      (`(=> @ ,proc)
                       (let ((FUNC (gensym)))
