@@ -288,14 +288,16 @@ e.g.
                   ,(pcase-exhaustive body
                      ;; (TEST => @ PROC)
                      (`(=> @ ,proc)
-                      (unless (functionp proc)
-                        (error "Form must be a function but %s" proc))
-                      `(funcall ,proc ,V))
+                      `(progn
+                         (unless (functionp ,proc)
+                           (error "Form must be a function but %s" ,proc))
+                         (funcall ,proc ,V)))
                      ;; (TEST => PROC)
                      (`(=> ,proc)
-                      (unless (functionp proc)
-                        (error "Form must be a function but %s" proc))
-                      `(list (funcall ,proc ,V)))
+                      `(progn
+                         (unless (functionp ,proc)
+                           (error "Form must be a function but %s" ,proc))
+                         (list (funcall ,proc ,V))))
                      ;; (TEST @ EXPR ...)
                      (`(@ . ,exprs)
                       `(progn ,@exprs))
