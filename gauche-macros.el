@@ -37,6 +37,9 @@
 (require 'cl-lib)
 (require 'pcase)
 
+(when (< emacs-major-version 26)
+  (require 'cl))
+
 (defmacro let1 (var expr &rest body)
   "Bind VAR to EXPR and evaluate BODY.
 
