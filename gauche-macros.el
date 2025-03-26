@@ -148,9 +148,9 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
                 (if (and ,V (funcall ,GUARD ,V))
                     (funcall ,FUNC1 ,V)
                   ,res))))
+          ((pred (lambda (l) (memq '=> l)))
+           (error "Malformed `srfi-cond' \"%.50s\"" body))
           (body
-           (when (memq '=> body)
-             (error "Malformed `srfi-cond' \"%.50s\"" body))
            `(if ,test
                ;; (test . body)
                (progn ,@body)
@@ -299,11 +299,12 @@ e.g.
                      ;; (TEST @ EXPR ...)
                      (`(@ . ,exprs)
                       `(progn ,@exprs))
+                     ((pred (lambda (l)
+                              (or (memq '=> l)
+                                  (memq '@ l))))
+                      (error "Malformed `cond-list' \"%.50s\"" body))
                      ;; (TEST EXPR ...)
                      (exprs
-                      (when (or (memq '=> body)
-                                (memq '@ body))
-                        (error "Malformed `cond-list' \"%.50s\"" body))
                       `(list (progn ,@exprs))))
                 nil)
               ,accum))))
