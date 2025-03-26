@@ -341,7 +341,7 @@ See `cut', `cute'
         (delay-funcall nil)
         (delay-apply nil)
         (expand* nil)
-        (arg-sym nil))
+        (ARG nil))
     (mapc
      (lambda (x)
        (cond
@@ -355,8 +355,8 @@ See `cut', `cute'
              (setq delay-apply t))
             (t
              (error "Assert")))
-           (setq arg-sym (gensym))
-           (setq accum (list arg-sym)))
+           (setq ARG (gensym))
+           (setq accum (list ARG)))
           (t
            (setq accum
                  (cond
@@ -374,9 +374,9 @@ See `cut', `cute'
      (reverse (cons '$ args)))
     (cond
      (delay-funcall
-      `(lambda (,arg-sym) ,@accum))
+      `(lambda (,ARG) ,@accum))
      (delay-apply
-      `(lambda (&rest ,arg-sym) ,@accum))
+      `(lambda (&rest ,ARG) ,@accum))
      (t
       (car accum)))))
 
@@ -403,15 +403,15 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
      (lambda (e)
        (cond
         ((eq e '<>)
-         (let ((sym (gensym)))
-           (setq forms (cons sym forms))
-           (setq args (cons sym args))))
+         (let ((ARG (gensym)))
+           (setq forms (cons ARG forms))
+           (setq args (cons ARG args))))
         ((eq e '<...>)
          (when forms
            (error "Malformed cut. `<...>' should be last of the form."))
-         (let ((sym (gensym)))
-           (setq forms (list sym))
-           (setq args (list '&rest sym))
+         (let ((ARGS (gensym)))
+           (setq forms (list ARGS))
+           (setq args (list '&rest ARGS))
            (setq tail* t)))
         (t
          (setq forms (cons e forms)))))
@@ -439,20 +439,20 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
      (lambda (e)
        (cond
         ((eq e '<>)
-         (let ((sym (gensym)))
-           (setq forms (cons sym forms))
-           (setq args (cons sym args))))
+         (let ((ARG (gensym)))
+           (setq forms (cons ARG forms))
+           (setq args (cons ARG args))))
         ((eq e '<...>)
          (when forms
            (error "Malformed cute. `<...>' should be last of the form."))
-         (let ((sym (gensym)))
-           (setq forms (list sym))
-           (setq args (list '&rest sym))
+         (let ((ARGS (gensym)))
+           (setq forms (list ARGS))
+           (setq args (list '&rest ARGS))
            (setq tail* t)))
         (t
-         (let ((sym (gensym)))
-           (setq vars (cons (list sym e) vars))
-           (setq forms (cons sym forms))))))
+         (let ((ARG (gensym)))
+           (setq vars (cons (list ARG e) vars))
+           (setq forms (cons ARG forms))))))
      (reverse exprs))
     (cond
      (tail*
