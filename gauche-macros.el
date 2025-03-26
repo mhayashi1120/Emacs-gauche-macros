@@ -155,9 +155,9 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
            (error "Malformed `srfi-cond' \"%.50s\"" rest))
           (body
            `(if ,test
-               ;; (test . body)
-               (progn ,@body)
-             ,res))))
+                ;; (test . body)
+                (progn ,@body)
+              ,res))))
        (_
         (error "Malformed `srfi-cond'"))))
    clauses
