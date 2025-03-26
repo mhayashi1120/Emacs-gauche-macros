@@ -5,7 +5,7 @@
 ;; Emacs: GNU Emacs
 ;; URL: https://github.com/mhayashi1120/Emacs-gauche-macros
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 0.8.4
+;; Version: 0.9.0
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
