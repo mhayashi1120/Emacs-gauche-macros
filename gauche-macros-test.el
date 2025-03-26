@@ -33,6 +33,20 @@
      (t))
     '(nil))))
 
+(defun gauche-macro-test-add10 (i)
+  (+ i 10))
+
+(defvar gauche-macro-test-var3 #'gauche-macro-test-add10)
+
+(ert-deftest cond-list3 ()
+  :tags '(gauche-macros)
+  (should
+   (equal
+    (cond-list
+     ;; empty body
+     (1 => #'gauche-macro-test-add10)
+     (5 => gauche-macro-test-var3))
+    '(11 15))))
 
 (ert-deftest srfi-and-let1 ()
   :tags '(gauche-macros)
