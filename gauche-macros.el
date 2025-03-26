@@ -5,7 +5,7 @@
 ;; Emacs: GNU Emacs
 ;; URL: https://github.com/mhayashi1120/Emacs-gauche-macros
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 0.8.3
+;; Version: 0.8.4
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -35,6 +35,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'pcase)
 
 (defmacro let1 (var expr &rest body)
   "Bind VAR to EXPR and evaluate BODY.
@@ -97,14 +98,14 @@ like Emacs-Lisp style `if'."
 
 CLAUSES ::= CLAUSE . CLAUSES | ()
 CLAUSE ::= (TEST . BODY)
-CLAUSE ::= (TEST => LAMBDA)
-CLAUSE ::= (TEST GUARD => LAMBDA)
+CLAUSE ::= (TEST => FUNCTION1)
+CLAUSE ::= (TEST GUARD => FUNCTION1)
 
 CLAUSE: Try each clause until TEST (optionally GUARD) return non-nil value
-  and succeeding BODY/LAMBDA is evaluated.
-LAMBDA: Function call with TEST result as an argument.
+  and succeeding BODY/FUNCTION1 is evaluated.
+FUNCTION1: Function call with TEST result as an argument.
 GUARD: Function call with TEST result as an argument.
-  If the GUARD return nil, succeeding LAMBDA is not called and continue
+  If the GUARD return nil, succeeding FUNCTION1 is not called and continue
   to the next CLAUSEs.
 
 Emacs-Lisp `cond':
@@ -126,31 +127,32 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
   (declare (debug t))
   (cl-reduce
    (lambda (clause res)
-     (let ((test (car clause)))
-       (cond
-        ;; (test => receiver)
-        ((eq (cadr clause) '=>)
-         (unless (= (length clause) 3)
-           (error "Malformed `srfi-cond' test => expr"))
-         (let ((v (make-symbol "v")))
-           `(let ((,v ,test))
-              (if ,v
-                  (,(eval (cl-caddr clause)) ,v)
-                ,res))))
-        ;; (generator guard => receiver)
-        ((eq (cl-caddr clause) '=>)        ; srfi-61
-         (unless (= (length clause) 4)
-           (error "Malformed `srfi-cond' test guard => expr"))
-         (let ((v1 (make-symbol "v1")))
-           `(let ((,v1 ,test))
-              (if (and ,v1 (,(eval (cadr clause)) ,v1))
-                  (,(eval (cl-cadddr clause)) ,v1)
-                ,res))))
-        (t
-         `(if ,test
-              ;; (test . body)
-              (progn ,@(cdr clause))
-            ,res)))))
+     (pcase clause
+       (`(,test . ,rest)
+        (pcase-exhaustive rest
+          (`(=> ,func1)
+           (let ((v (make-symbol "v")))
+             `(let ((,v ,test))
+                (if ,v
+                    ;; TODO funcall
+                    (,(eval func1) ,v)
+                  ,res))))
+          (`(,guard => ,func1)
+           (let ((v1 (make-symbol "v1")))
+             `(let ((,v1 ,test))
+                (if (and ,v1 (,(eval guard) ,v1))
+                    ;; TODO funcall
+                    (,(eval func1) ,v1)
+                  ,res))))
+          (body
+           (when (memq '=> body)
+             (error "Malformed `srfi-cond' \"%.50s\"" body))
+           `(if ,test
+               ;; (test . body)
+               (progn ,@body)
+             ,res))))
+       (_
+        (error "Malformed `srfi-cond'"))))
    clauses
    :from-end t
    :initial-value nil))
@@ -273,40 +275,36 @@ e.g.
   (declare (debug t))
   (cl-reduce
    (lambda (clause accum)
-     (when (null clause)
-       (error "No matching clause %s" clause))
-     (let ((test-result (make-symbol "result"))
-           (test (car clause))
-           (body (cdr clause)))
-       `(let ((,test-result ,test))
-          (append
-           (if ,test-result
-               ,(cond
-                 ;; (TEST => @ PROC)
-                 ((and (eq (car body) '=>)
-                       (eq (cadr body) '@))
-                  (unless (= (length (cddr body)) 1)
-                    (error "Invalid clause %s" body))
-                  (let ((proc (cl-caddr body)))
-                    (unless (functionp proc)
-                      (error "Form must be a function but %s" proc))
-                    `(funcall ,proc ,test-result)))
-                 ;; (TEST => PROC)
-                 ((eq (car body) '=>)
-                  (unless (= (length (cdr body)) 1)
-                    (error "Invalid clause %s" body))
-                  (let ((proc (cadr body)))
-                    (unless (functionp proc)
-                      (error "Form must be a function but %s" proc))
-                    `(list (funcall ,proc ,test-result))))
-                 ;; (TEST @ EXPR ...)
-                 ((eq (car body) '@)
-                  `(progn ,@(cdr body)))
-                 ;; (TEST EXPR ...)
-                 (t
-                  `(list (progn ,@body))))
-             nil)
-           ,accum))))
+     (pcase-exhaustive clause
+       (`(,test . ,body)
+        (let ((test-result (make-symbol "result")))
+          `(let ((,test-result ,test))
+             (append
+              (if ,test-result
+                  ,(pcase-exhaustive body
+                     ;; (TEST => @ PROC)
+                     (`(=> @ ,proc)
+                      (unless (functionp proc)
+                        (error "Form must be a function but %s" proc))
+                      `(funcall ,proc ,test-result))
+                     ;; (TEST => PROC)
+                     (`(=> ,proc)
+                      (unless (functionp proc)
+                        (error "Form must be a function but %s" proc))
+                      `(list (funcall ,proc ,test-result)))
+                     ;; (TEST @ EXPR ...)
+                     (`(@ . ,exprs)
+                      `(progn ,@exprs))
+                     ;; (TEST EXPR ...)
+                     (exprs
+                      (when (or (memq '=> body)
+                                (memq '@ body))
+                        (error "Malformed `cond-list' \"%.50s\"" body))
+                      `(list (progn ,@exprs))))
+                nil)
+              ,accum))))
+       (_
+        (error "No matching clause %s" clause))))
    clauses
    :from-end t
    :initial-value nil))
@@ -522,7 +520,6 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
          ;; (message "%s %s" (current-message) (list level partial-sexp normal-indent))
          (lisp-indent-specform level state
                                indent-point normal-indent)))))
-
 
 ;;;
 ;;; Unloading
