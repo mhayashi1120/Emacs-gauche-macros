@@ -131,18 +131,18 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
        (`(,test . ,rest)
         (pcase-exhaustive rest
           (`(=> ,func1)
-           (let ((v (make-symbol "v")))
-             `(let ((,v ,test))
-                (if ,v
+           (let ((V (gensym)))
+             `(let ((,V ,test))
+                (if ,V
                     ;; TODO funcall
-                    (,(eval func1) ,v)
+                    (,(eval func1) ,V)
                   ,res))))
           (`(,guard => ,func1)
-           (let ((v1 (make-symbol "v1")))
-             `(let ((,v1 ,test))
-                (if (and ,v1 (,(eval guard) ,v1))
+           (let ((V (gensym)))
+             `(let ((,V ,test))
+                (if (and ,V (,(eval guard) ,V))
                     ;; TODO funcall
-                    (,(eval func1) ,v1)
+                    (,(eval func1) ,V)
                   ,res))))
           (body
            (when (memq '=> body)
@@ -277,21 +277,21 @@ e.g.
    (lambda (clause accum)
      (pcase-exhaustive clause
        (`(,test . ,body)
-        (let ((test-result (make-symbol "result")))
-          `(let ((,test-result ,test))
+        (let ((V (gensym)))
+          `(let ((,V ,test))
              (append
-              (if ,test-result
+              (if ,V
                   ,(pcase-exhaustive body
                      ;; (TEST => @ PROC)
                      (`(=> @ ,proc)
                       (unless (functionp proc)
                         (error "Form must be a function but %s" proc))
-                      `(funcall ,proc ,test-result))
+                      `(funcall ,proc ,V))
                      ;; (TEST => PROC)
                      (`(=> ,proc)
                       (unless (functionp proc)
                         (error "Form must be a function but %s" proc))
-                      `(list (funcall ,proc ,test-result)))
+                      `(list (funcall ,proc ,V)))
                      ;; (TEST @ EXPR ...)
                      (`(@ . ,exprs)
                       `(progn ,@exprs))
