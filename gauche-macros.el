@@ -131,18 +131,22 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
        (`(,test . ,rest)
         (pcase-exhaustive rest
           (`(=> ,func1)
-           (let ((V (gensym)))
-             `(let ((,V ,test))
+           (let ((V (gensym))
+                 (FUNC1 (gensym)))
+             `(let ((,V ,test)
+                    (,FUNC1 ,func1))
                 (if ,V
-                    ;; TODO funcall
-                    (,(eval func1) ,V)
+                    (funcall ,FUNC1 ,V)
                   ,res))))
           (`(,guard => ,func1)
-           (let ((V (gensym)))
-             `(let ((,V ,test))
-                (if (and ,V (,(eval guard) ,V))
-                    ;; TODO funcall
-                    (,(eval func1) ,V)
+           (let ((V (gensym))
+                 (GUARD (gensym))
+                 (FUNC1 (gensym)))
+             `(let ((,V ,test)
+                    (,GUARD ,guard)
+                    (,FUNC1 ,func1))
+                (if (and ,V (funcall ,GUARD ,V))
+                    (funcall ,FUNC1 ,V)
                   ,res))))
           (body
            (when (memq '=> body)
