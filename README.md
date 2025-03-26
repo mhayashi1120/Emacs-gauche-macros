@@ -50,4 +50,4 @@ and edit env.mk
 # TODO
 
 - edebug familiar (cute, cut, $, cond-list)
-- rewrite some by `pcase` or `pmatch`
+- rewrite some by `pcase` or `pmatch` (pcase -> pmatch)
