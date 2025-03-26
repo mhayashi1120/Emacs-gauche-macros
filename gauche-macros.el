@@ -69,33 +69,6 @@ like Emacs-Lisp style `if'."
   `(let ((,var ,expr))
      (if ,var ,then ,@else)))
 
-;; (let ((sample '((a . "A"))))
-;;
-;;   (list
-;;    ;; Same as Emacs-Lisp cond.
-;;    (srfi-cond
-;;     ((assoc 'a sample)
-;;      (list (cdr (assoc 'a sample)))))
-;;
-;;    ;; Above is rewrite as following.
-;;    (srfi-cond
-;;     ((assoc 'a sample) =>
-;;      (lambda (v) (list (cdr v)))))
-;;
-;;    (srfi-cond
-;;     ((assoc 'b sample) =>
-;;      (lambda (v) (error "Should not found"))))
-;;
-;;    ;; Guard examples. Guard clause can continue TESTs
-;;    (srfi-cond
-;;     ((assoc 'a sample)
-;;      (lambda (v) (string= (cdr v) "B")) =>
-;;      (lambda (v) (list (cdr v))))
-;;     ((assoc 'a sample)
-;;      (lambda (v) (string= (cdr v) "A")) =>
-;;      (lambda (v) (list (cdr v)))))
-;;    ))
-
 (defmacro srfi-cond (&rest clauses)
   "Like `cond' but SRFI extension.
 
@@ -222,33 +195,6 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
      ,@body))
 
 
-
-;; Useful when constructing json.
-;; (let ((input (make-hash-table)))
-;;   (puthash 'a "A" input)
-;;   (puthash 'b "B" input)
-;;   (puthash 'c 10 input)
-;;   (puthash 'd [1,2,3] input)
-;;   (puthash 'j `((z . "Z") (y . "Y"))  input)
-;;   (json-encode
-;;    (cond-list
-;;     (t
-;;      (cons "Required" "Field"))
-;;     ((gethash 'a input) =>
-;;      (lambda (v) (cons "optionalField" v)))
-;;     ((gethash 'not-found input) =>
-;;      (lambda (v) (error "Should not found %s" v)))
-;;     ((gethash 'c input) =>
-;;      (lambda (v) (cons "optionalVector" (make-vector 5 v))))
-;;     ((gethash 'd input) =>
-;;      (lambda (v) (cons "optionalValue" (aref v 0))))
-;;     ((gethash 'j input) =>
-;;      (lambda (v) (cons "optionalChildJson" v)))
-;;     ;; This will expanded to parent json
-;;     ((gethash 'j input) => @
-;;      (lambda (v) v))
-;;     )
-;;    ))
 
 ;; From gauche common-macros.scm
 (defmacro cond-list (&rest clauses)
