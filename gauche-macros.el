@@ -149,7 +149,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
                     (funcall ,FUNC1 ,V)
                   ,res))))
           ((pred (lambda (l) (memq '=> l)))
-           (error "Malformed `srfi-cond' \"%.50s\"" body))
+           (error "Malformed `srfi-cond' \"%.50s\"" rest))
           (body
            `(if ,test
                ;; (test . body)
@@ -351,7 +351,7 @@ See `cut', `cute'
              (setq delay-apply t))
             (t
              (error "Assert")))
-           (setq arg-sym (make-symbol "arg"))
+           (setq arg-sym (gensym))
            (setq accum (list arg-sym)))
           (t
            (setq accum
@@ -399,13 +399,13 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
      (lambda (e)
        (cond
         ((eq e '<>)
-         (let ((sym (make-symbol "arg")))
+         (let ((sym (gensym)))
            (setq forms (cons sym forms))
            (setq args (cons sym args))))
         ((eq e '<...>)
          (when forms
            (error "Malformed cut. `<...>' should be last of the form."))
-         (let ((sym (make-symbol "args")))
+         (let ((sym (gensym)))
            (setq forms (list sym))
            (setq args (list '&rest sym))
            (setq tail* t)))
@@ -435,18 +435,18 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
      (lambda (e)
        (cond
         ((eq e '<>)
-         (let ((sym (make-symbol "arg")))
+         (let ((sym (gensym)))
            (setq forms (cons sym forms))
            (setq args (cons sym args))))
         ((eq e '<...>)
          (when forms
            (error "Malformed cute. `<...>' should be last of the form."))
-         (let ((sym (make-symbol "args")))
+         (let ((sym (gensym)))
            (setq forms (list sym))
            (setq args (list '&rest sym))
            (setq tail* t)))
         (t
-         (let ((sym (make-symbol "const")))
+         (let ((sym (gensym)))
            (setq vars (cons (list sym e) vars))
            (setq forms (cons sym forms))))))
      (reverse exprs))
