@@ -187,4 +187,50 @@
 
   )
 
+(defun gauche-macros-test1-func1 (l)
+  (mapcar
+   (lambda (v) (+ v 5))
+   l))
+
+(defvar gauche-macros-test1-var1 #'gauche-macros-test1-func1)
+
+(defun gauche-macros-test1-guard1 (l)
+  (cl-every #'integerp l))
+
+(defvar gauche-macros-test1-var2 #'gauche-macros-test1-guard1)
+
+(ert-deftest srfi-cond2 ()
+  :tags '(gauche-macros)
+
+  (should
+   (equal
+    (srfi-cond
+     ((member 3 '(1 2 3 4 5)) => #'gauche-macros-test1-func1))
+    '(8 9 10)))
+
+  (should
+   (equal
+    (srfi-cond
+     ((member 3 '(1 2 3 4 5)) => gauche-macros-test1-var1))
+    '(8 9 10)))
+
+  (should
+   (equal
+    (srfi-cond
+     ((member 3 '(1 2 3 4 5)) #'gauche-macros-test1-guard1 => gauche-macros-test1-var1))
+    '(8 9 10)))
+
+  (should
+   (equal
+    (srfi-cond
+     ((member 3 '(1 2 3 4 5)) gauche-macros-test1-var2 => gauche-macros-test1-var1))
+    '(8 9 10)))
+
+  (should
+   (equal
+    (srfi-cond
+     ((member 3 '(1 2 3.5 4 5)) gauche-macros-test1-var2 => gauche-macros-test1-var1)
+     (t 'false))
+    'false)))
+
 (provide 'gauche-macros-test)
