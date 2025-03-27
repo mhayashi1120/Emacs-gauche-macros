@@ -139,6 +139,14 @@
   (should (equal (mapcar (cut #'* 2 <>) '(1 2 3 4)) '(2 4 6 8)))
   )
 
+(ert-deftest cut2 ()
+  :tags '(gauche-macros)
+
+  (let ((f (cut (lambda (x) (+ x 2)) <>)))
+    (should (equal (funcall f 1) 3))
+    (should (equal (funcall f 5) 7)))
+  )
+
 (ert-deftest cute1 ()
   :tags '(gauche-macros)
   (should (equal (mapcar (cute #'split-string <> (char-to-string ?\-)) (list "A,B,C" "1-2-3"))
@@ -154,6 +162,13 @@
   (should (equal (mapcar (cute #'* 2 <>) '(1 2 3 4)) '(2 4 6 8)))
   )
 
+(ert-deftest cute2 ()
+  :tags '(gauche-macros)
+
+  (let ((f (cute (lambda (x) (+ x 2)) <>)))
+    (should (equal (funcall f 1) 3))
+    (should (equal (funcall f 5) 7)))
+  )
 
 (defun gauche-macros-test--generator (n)
   (let ((m n))
