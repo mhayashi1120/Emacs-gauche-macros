@@ -292,7 +292,8 @@ e.g.
 
 See `cut', `cute'
 "
-  (declare (debug t))
+  ;; TODO debug not working
+  (declare (debug (&rest [&or "$" "$*" form])))
   (let ((accum '())
         (delay-funcall nil)
         (delay-apply nil)
@@ -351,7 +352,7 @@ NOTE: Unlike scheme, function symbol must be quoted. This behavior
 NOTE: To simplify this help, internally clearly using `funcall' or `apply'
   to expand the EXPRS.
 "
-  (declare (debug t))
+  (declare (debug (&rest [&or "<>" "<...>" form])))
   (let ((forms `())
         (args `())
         (tail* nil))
@@ -386,7 +387,7 @@ NOTE: To simplify this help, internally clearly using `funcall' or `apply'
 \(cute \\='+ (+ 20 30) <>) => (let ((a 50)) (lambda (a1) (+ a a1)))
 
 "
-  (declare (debug t))
+  (declare (debug (&rest [&or "<>" "<...>" form])))
   (let ((forms '())
         (args '())
         (vars '())
