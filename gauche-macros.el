@@ -141,7 +141,7 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
 
 
 ;; Renamed and-let* -> srfi-and-let* since similar `and-let*' is introduced subr-x.el GNU Emacs
-(defmacro srfi-and-let* (varlist &rest body)
+(defmacro srfi-and-let* (claws &rest body)
   "Like `let' but only CLAW bind non-nil value.
 Useful to avoid deep nesting of `let' and `and'/`when'/`if' test.
 
@@ -187,7 +187,7 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
        ;; (VARIABLE EXPRESSION)
        `(let ((,(car v) ,(cadr v)))
           (and ,(car v) ,res)))))
-   varlist
+   claws
    :from-end t
    :initial-value `(progn ,@body)))
 
