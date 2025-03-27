@@ -72,7 +72,8 @@ like Emacs-Lisp style `if'."
 (defmacro srfi-cond (&rest clauses)
   "Like `cond' but SRFI extension.
 
-CLAUSES ::= CLAUSE . CLAUSES | ()
+CLAUSES ::= (CLAUSE . CLAUSES) | ()
+
 CLAUSE ::= (TEST . BODY)
 CLAUSE ::= (TEST => FUNCTION1)
 CLAUSE ::= (TEST GUARD => FUNCTION1)
@@ -144,10 +145,13 @@ http://srfi.schemers.org/srfi-61/srfi-61.html"
   "Like `let' but only CLAW bind non-nil value.
 Useful to avoid deep nesting of `let' and `and'/`when'/`if' test.
 
-AND-LET* (CLAWS) BODY
+CLAWS ::= (CLAW . CLAWS) | ()
 
-CLAWS ::= \\='() | (CLAW . CLAWS)
-CLAW  ::=  (VARIABLE EXPRESSION) | (EXPRESSION) | BOUND-VARIABLE
+CLAW  ::= (VARIABLE EXPRESSION)
+CLAW  ::= (EXPRESSION)
+CLAW  ::= BOUND-VARIABLE
+
+Example:
 
 \(let ((v1 (some)))
   (when v1
@@ -199,11 +203,14 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
 ;; From gauche common-macros.scm
 (defmacro cond-list (&rest clauses)
   "Expand CLAUSES succeeding form if TEST success.
-`@' notation append EXPR or PROC results to result set.
-\(TEST EXPR ...)
-\(TEST => PROC)
-\(TEST @ EXPR ...)
-\(TEST => @ PROC)
+`@' notation append EXPR or FUNC1 results to result set.
+
+CLAUSES ::= (CLAUSE . CLAUSES) | ()
+
+CLAUSE  ::= (TEST EXPR ...)
+CLAUSE  ::= (TEST => FUNC1)
+CLAUSE  ::= (TEST @ EXPR ...)
+CLAUSE  ::= (TEST => @ FUNC1)
 
 e.g.
 
@@ -235,14 +242,14 @@ e.g.
              (append
               (if ,V
                   ,(pcase body
-                     ;; (TEST => @ PROC)
+                     ;; (TEST => @ FUNC1)
                      (`(=> @ ,proc)
                       (let ((FUNC (gensym)))
                         `(let ((,FUNC ,proc))
                            (unless (functionp ,FUNC)
                              (error "Form must be a function but %s" ,FUNC))
                            (funcall ,FUNC ,V))))
-                     ;; (TEST => PROC)
+                     ;; (TEST => FUNC1)
                      (`(=> ,proc)
                       (let ((FUNC (gensym)))
                         `(let ((,FUNC ,proc))
