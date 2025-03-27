@@ -17,7 +17,7 @@
 ;; -> '("A")
 
 (srfi-cond
- ((assoc 'b sample) =>
+ ((assoc 'NONE sample) =>
   (lambda (v) (list (cdr v)))))
 ;; -> nil
 
