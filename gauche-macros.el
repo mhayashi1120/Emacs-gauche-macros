@@ -101,7 +101,18 @@ NOTE: Unlike scheme, not using `else' keyword using `t' same as Emacs-Lisp cond.
 
 \[SRFI-61]
 http://srfi.schemers.org/srfi-61/srfi-61.html"
-  (declare (debug t))
+  (declare (debug
+            ;; CLAUSES
+            (&rest
+             ;; CLAUSE
+             (form
+              &or
+              ;; (TEST => FUNCTION1)
+              ["=>" lambda-expr]
+              ;; (TEST GUARD => FUNCTION1)
+              [form "=>" lambda-expr]
+              ;; (TEST . BODY)
+              body))))
   (cl-reduce
    (lambda (clause res)
      (pcase clause
@@ -232,7 +243,19 @@ e.g.
   => ((a) b)
 
 "
-  (declare (debug t))
+  (declare (debug
+            ;; CLAUSES
+            (&rest
+             ;; CLAUSE
+             (form
+              &or
+              ;; (TEST => FUNC1)
+              ;; (TEST => @ FUNC1)
+              ["=>" &or ["@" lambda-expr] lambda-expr]
+              ;; (TEST @ EXPR ...)
+              ["@" body]
+              ;; (TEST EXPR ...)
+              body))))
   (cl-reduce
    (lambda (clause accum)
      (pcase clause
@@ -259,7 +282,7 @@ e.g.
                      ;; (TEST @ EXPR ...)
                      (`(@ . ,exprs)
                       `(progn ,@exprs))
-                     ((pred (lambda (l)
+                     ((pred (lambda (l) ; Disallow "=>" "@" syntax
                               (or (memq '=> l)
                                   (memq '@ l))))
                       (error "Malformed `cond-list' \"%.50s\"" body))
@@ -276,13 +299,6 @@ e.g.
 
 
 
-;; TODO when eval the following with edebug-defun not working
-;; ($  (cut 'mapconcat #'identity <> ":")
-;;     $ #'mapcar (cut #'format "-%d-" <>)
-;;     $ #'mapcar #'1+
-;;     $ #'mapcar #'string-to-number
-;;     $ (cut #'split-string <> ",") "11,22,33")
-
 (defmacro $ (&rest args)
   "Convenience macro to chain functions.
 
@@ -292,7 +308,6 @@ e.g.
 
 See `cut', `cute'
 "
-  ;; TODO debug not working
   (declare (debug (&rest [&or "$" "$*" form])))
   (let ((accum '())
         (delay-funcall nil)
@@ -352,7 +367,7 @@ NOTE: Unlike scheme, function symbol must be quoted. This behavior
 NOTE: To simplify this help, internally clearly using `funcall' or `apply'
   to expand the EXPRS.
 "
-  (declare (debug (&rest [&or "<>" "<...>" form])))
+  (declare (debug (&rest [&or "<>" "<...>" sexp])))
   (let ((forms `())
         (args `())
         (tail* nil))
