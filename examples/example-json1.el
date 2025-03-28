@@ -1,3 +1,5 @@
+(require 'gauche-macros)
+
 ;; Useful when constructing json.
 (defvar input (make-hash-table))
 

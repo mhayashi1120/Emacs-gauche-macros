@@ -1,3 +1,5 @@
+(require 'gauche-macros)
+
 (defvar sample '((a . "A")))
 
  ;; Same as Emacs-Lisp cond.
