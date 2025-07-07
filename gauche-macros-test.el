@@ -20,8 +20,10 @@
                   ;; ng test is function call
                   (((lambda () nil)) 8)
                   (t 9 10)
+                  ;; missing EXPR return TEST result
+                  (11)
                   )
-                 '(1 2 3 3 3 4 5 6 7 10))))
+                 '(1 2 3 3 3 4 5 6 7 10 11))))
 
 (ert-deftest cond-list2 ()
   :tags '(gauche-macros)
@@ -31,7 +33,7 @@
      ;; empty body
      (nil)
      (t))
-    '(nil))))
+    '(t))))
 
 (defun gauche-macro-test-add10 (i)
   (+ i 10))

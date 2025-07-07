@@ -5,7 +5,7 @@
 ;; Emacs: GNU Emacs
 ;; URL: https://github.com/mhayashi1120/Emacs-gauche-macros
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 0.9.1
+;; Version: 0.9.2
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -218,7 +218,7 @@ http://srfi.schemers.org/srfi-2/srfi-2.html
 
 CLAUSES ::= (CLAUSE . CLAUSES) | ()
 
-CLAUSE  ::= (TEST EXPR ...)
+CLAUSE  ::= (TEST [EXPR ...])
 CLAUSE  ::= (TEST => FUNC1)
 CLAUSE  ::= (TEST @ EXPR ...)
 CLAUSE  ::= (TEST => @ FUNC1)
@@ -228,8 +228,9 @@ e.g.
 \(cond-list
   (t 1)
   (nil 2)
-  (t \\='(3)))
-  => (1 (3))
+  (t \\='(3))
+  (4))
+  => (1 (3) 4)
 
 \(cond-list
   (t 1)
@@ -286,6 +287,9 @@ e.g.
                               (or (memq '=> l)
                                   (memq '@ l))))
                       (error "Malformed `cond-list' \"%.50s\"" body))
+                     ;; (TEST)
+                     ('()
+                      `(list ,V))
                      ;; (TEST EXPR ...)
                      (exprs
                       `(list (progn ,@exprs))))
