@@ -5,7 +5,7 @@
 ;; Emacs: GNU Emacs
 ;; URL: https://github.com/mhayashi1120/Emacs-gauche-macros
 ;; Package-Requires: ((emacs "24.4"))
-;; Version: 0.9.2
+;; Version: 0.9.3
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -288,7 +288,7 @@ e.g.
                                   (memq '@ l))))
                       (error "Malformed `cond-list' \"%.50s\"" body))
                      ;; (TEST)
-                     ('()
+                     (`()
                       `(list ,V))
                      ;; (TEST EXPR ...)
                      (exprs
