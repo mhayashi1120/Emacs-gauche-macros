@@ -288,7 +288,7 @@ e.g.
                                   (memq '@ l))))
                       (error "Malformed `cond-list' \"%.50s\"" body))
                      ;; (TEST)
-                     ('()
+                     (()
                       `(list ,V))
                      ;; (TEST EXPR ...)
                      (exprs
